@@ -7,17 +7,16 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Enable collection of default metrics (CPU, memory, etc.)
-const collectDefaultMetrics = client.collectDefaultMetrics;
-collectDefaultMetrics();
+// Collect default Node.js metrics (CPU, memory, GC, etc.)
+client.collectDefaultMetrics();
 
-// Custom metric: number of connected users
+// Custom metric: track number of connected users
 const connectedUsersGauge = new client.Gauge({
   name: 'chat_connected_users',
   help: 'Number of connected users',
 });
 
-// WebSocket logic
+// WebSocket logic for tracking connections
 io.on('connection', (socket) => {
   connectedUsersGauge.inc();
 
@@ -26,18 +25,18 @@ io.on('connection', (socket) => {
   });
 });
 
-// Route to expose Prometheus metrics
+// Route: Prometheus metrics endpoint
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', client.register.contentType);
   res.end(await client.register.metrics());
 });
 
-// Default homepage route
+// Route: Homepage health check
 app.get('/', (req, res) => {
   res.send('Chat server is up and running!');
 });
 
-// Start the server
+// Start HTTP server
 server.listen(3000, () => {
   console.log('Server running on port 3000');
 });
