@@ -1,11 +1,15 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const socketIo = require('socket.io');
 const client = require('prom-client');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+// Serve static files (like index.html) from current directory
+app.use(express.static(path.join(__dirname)));
 
 // Collect default Node.js metrics (CPU, memory, GC, etc.)
 client.collectDefaultMetrics();
@@ -31,9 +35,9 @@ app.get('/metrics', async (req, res) => {
   res.end(await client.register.metrics());
 });
 
-// Route: Homepage health check
+// Route: Serve index.html as homepage
 app.get('/', (req, res) => {
-  res.send('Chat server is up and running!');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Start HTTP server
