@@ -24,12 +24,14 @@ pipeline {
             }
         }
 
-        stage('Deploy to EC2 via Ansible') {
+        stage('Deploy with Ansible') {
             steps {
-                sh '''
-                    cd /mnt/d/project-2/ansible-chat-app
-                    ansible-playbook -i inventory.ini playbook.yml --ssh-extra-args="-o StrictHostKeyChecking=no"
-                '''
+                sshagent(['chat-app-key']) {
+                    sh '''
+                        cd /mnt/d/project-2/ansible-chat-app
+                        ansible-playbook -i inventory.ini playbook.yml --ssh-extra-args="-o StrictHostKeyChecking=no"
+                    '''
+                }
             }
         }
     }
