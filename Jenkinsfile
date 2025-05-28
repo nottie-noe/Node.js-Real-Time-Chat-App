@@ -6,12 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/nottie-noe/Node.js-Real-Time-Chat-App.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
