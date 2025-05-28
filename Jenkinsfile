@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'github-credentials', // or blank if it's a public repo
+                    url: 'https://github.com/nottie-noe/Node.js-Real-Time-Chat-App.git'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
@@ -14,7 +22,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'No tests yet — skipping'
+                echo 'Skipping tests...'
             }
         }
 
