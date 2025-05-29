@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github-credentials', // or blank if it's a public repo
+                    credentialsId: 'github-credentials', // remove or leave blank if the repo is public
                     url: 'https://github.com/nottie-noe/Node.js-Real-Time-Chat-App.git'
             }
         }
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Deploy with Ansible') {
             steps {
-                sshagentchat-app-new-key.pem']) {
+                sshagent(['chat-app-new-key.pem']) {
                     sh '''
                         cd /mnt/d/project-2/ansible-chat-app
                         ansible-playbook -i inventory.ini playbook.yml --ssh-extra-args="-o StrictHostKeyChecking=no"
