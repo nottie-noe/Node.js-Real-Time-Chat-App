@@ -28,7 +28,7 @@ pipeline {
 
         stage('Deploy with Ansible') {
             steps {
-                sshagent(['chat-app-key']) {
+                sshagentchat-app-new-key.pem']) {
                     sh '''
                         cd /mnt/d/project-2/ansible-chat-app
                         ansible-playbook -i inventory.ini playbook.yml --ssh-extra-args="-o StrictHostKeyChecking=no"
