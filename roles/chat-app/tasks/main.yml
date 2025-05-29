@@ -2,6 +2,7 @@
 - name: Update APT packages
   apt:
     update_cache: yes
+  ignore_errors: yes
 
 - name: Install required tools
   apt:
