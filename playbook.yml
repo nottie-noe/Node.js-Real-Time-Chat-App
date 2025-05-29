@@ -1,0 +1,6 @@
+---
+- name: Deploy Node.js Chat App
+  hosts: chatapp
+  become: true
+  roles:
+    - chat-app
