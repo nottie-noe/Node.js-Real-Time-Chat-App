@@ -1,6 +1,9 @@
 ---
-- name: Deploy Node.js Chat App
+- name: Deploy Node.js Chat App to EC2 Instances
   hosts: chatapp
   become: true
+  vars:
+    app_directory: /home/ubuntu/chat-app
+    node_version: 18
   roles:
     - chat-app
