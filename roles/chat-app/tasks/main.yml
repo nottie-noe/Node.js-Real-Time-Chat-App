@@ -1,0 +1,66 @@
+---
+- name: Update APT packages
+  apt:
+    update_cache: yes
+
+- name: Install required tools
+  apt:
+    name:
+      - curl
+      - git
+      - nginx
+    state: present
+
+- name: Ensure Nginx is started and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Add NodeSource repo and install Node.js 18.x
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    apt-get install -y nodejs
+  args:
+    executable: /bin/bash
+
+- name: Install PM2 globally
+  npm:
+    name: pm2
+    global: yes
+
+- name: Clone the Chat App repository
+  git:
+    repo: https://github.com/nottie-noe/Node.js-Real-Time-Chat-App.git
+    dest: /home/ubuntu/chat-app
+    force: yes
+
+- name: Install app dependencies
+  npm:
+    path: /home/ubuntu/chat-app
+
+- name: Install prom-client for Prometheus metrics
+  npm:
+    name: prom-client
+    path: /home/ubuntu/chat-app
+
+- name: Copy Nginx config
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: Restart chat app with PM2
+  shell: |
+    pm2 restart chat-app || pm2 start /home/ubuntu/chat-app/app.js --name chat-app
+    pm2 save
+    pm2 startup systemd | grep 'sudo' | bash
+  args:
+    executable: /bin/bash
